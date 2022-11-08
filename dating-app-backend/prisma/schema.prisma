@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  userId                   String              @id
+  name                     String
+  lastName                 String
+  language                 String
+  age                      Int
+  gender                   String
+  attractedTo              String
+  activeUserRelations      UserRelation[]      @relation("requestUserRelation")
+  passiveUserRelations     UserRelation[]      @relation("targetUserRelation")
+  outgoingMatchRequests    UserMatchRequest[]  @relation("requestUserRequest")
+  incomingMatchRequests    UserMatchRequest[]  @relation("targetUserRequest")
+}
+
+
+model UserMatchRequest {
+  requestingUser           User                @relation(name: "requestUserRequest", fields: [requestUserId], references: [userId], onDelete: Cascade)
+  targetUser               User                @relation(name: "targetUserRequest", fields: [targetUserId], references: [userId], onDelete: Cascade)
+  requestUserId            String
+  targetUserId             String
+
+  @@id([requestUserId, targetUserId])
+}
+
+model UserRelation {
+  requestingUser           User                @relation(name: "requestUserRelation", fields: [requestUserId], references: [userId], onDelete: Cascade)
+  targerUser               User                @relation(name: "targetUserRelation", fields: [targetUserId], references: [userId], onDelete: Cascade)
+  requestUserId            String
+  targetUserId             String
+  relationStatus           UserRelationTypes
+
+  @@id([requestUserId, targetUserId])
+}
+
+enum UserRelationTypes {
+  REQUESTED
+  MATCHED
+  REJECTED
+}

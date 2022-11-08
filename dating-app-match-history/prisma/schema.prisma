@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserMatchHistory {
+  id                         Int              @id @default(autoincrement())
+  requestingUserId           String
+  targerUserId               String
+  matchTime                  DateTime
+}
+
+model UserRequestHistory {
+  id                         Int              @id @default(autoincrement())
+  requestingUserId           String
+  targerUserId               String
+  requestTime                DateTime
+}
+
+model UserRejectHistory {
+  id                         Int              @id @default(autoincrement())
+  requestingUserId           String
+  targerUserId               String
+  rejectTime                 DateTime
+}
